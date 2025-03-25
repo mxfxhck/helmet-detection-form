@@ -1,0 +1,144 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI Helmet Detection System</title>
+    <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js"></script>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            background-color: #e3f2fd;
+            margin: 0;
+        }
+        .container {
+            background: white;
+            padding: 30px;
+            border-radius: 12px;
+            box-shadow: 0px 4px 10px rgba(0,0,0,0.2);
+            width: 350px;
+            text-align: center;
+        }
+        h2 {
+            color: #0277bd;
+            margin-bottom: 20px;
+            font-size: 22px;
+            text-transform: uppercase;
+        }
+        label {
+            font-weight: bold;
+            display: block;
+            margin: 10px 0 5px;
+        }
+        input {
+            width: 100%;
+            padding: 10px;
+            font-size: 16px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            box-sizing: border-box;
+            text-transform: uppercase;
+        }
+        button {
+            width: 100%;
+            padding: 12px;
+            font-size: 18px;
+            color: white;
+            background-color: #0288d1;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            margin-top: 15px;
+            transition: background 0.3s;
+        }
+        button:hover {
+            background-color: #02669b;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h2>AI Helmet Detection System</h2>
+        <form id="vehicleForm">
+            <label for="numberPlate">Vehicle Number Plate:</label>
+            <input type="text" id="numberPlate" required>
+            
+            <label for="fullName">Full Name:</label>
+            <input type="text" id="fullName" required>
+
+            <label for="year">Year:</label>
+<select id="year" required>
+    <option value="">-- Select Year --</option>
+    <option value="FE">First Year</option>
+    <option value="SE">Second Year</option>
+    <option value="TE">Third Year</option>
+    <option value="BE">BE</option>
+</select>
+
+
+            <label for="branch">Branch:</label>
+            <input type="text" id="branch" required>
+            
+            <button type="submit">Submit</button>
+        </form>
+    </div>
+
+    <script>
+        const firebaseConfig = {
+            apiKey: "AIzaSyAIN5JP9_fN4NkSbrfUZo6XHP1FtOUqPUY",
+            authDomain: "helmet-detection-system-20f40.firebaseapp.com",
+            projectId: "helmet-detection-system-20f40",
+            storageBucket: "helmet-detection-system-20f40.firebasestorage.app",
+            messagingSenderId: "1007827446173",
+            appId: "1:1007827446173:web:40d236e491466b3a45e774"
+        };
+
+        firebase.initializeApp(firebaseConfig);
+        const db = firebase.firestore();
+
+        document.getElementById("vehicleForm").addEventListener("submit", function(event) {
+            event.preventDefault();
+            
+            let numberPlate = document.getElementById("numberPlate").value.toUpperCase().replace(/\s/g, "");
+            let fullName = document.getElementById("fullName").value.toUpperCase();
+            let year = document.getElementById("year").value.toUpperCase();
+            let branch = document.getElementById("branch").value.toUpperCase();
+
+            if (!/^[A-Z0-9]+$/.test(numberPlate)) {
+                alert("Invalid vehicle number plate format.");
+                return;
+            }
+
+            if (!/^[A-Z]+\s[A-Z]+$/.test(fullName)) {
+                alert("Please enter both first and last name in uppercase.");
+                return;
+            }
+
+            if (!year || !branch) {
+                alert("Please enter year and branch.");
+                return;
+            }
+
+            db.collection("helmet_detection").add({
+                numberPlate: numberPlate,
+                fullName: fullName,
+                year: year,
+                branch: branch,
+                timestamp: firebase.firestore.FieldValue.serverTimestamp()
+            })
+            .then(() => {
+                alert("Data saved successfully!");
+                document.getElementById("vehicleForm").reset();
+            })
+            .catch((error) => {
+                console.error("Error writing document: ", error);
+            });
+        });
+    </script>
+</body>
+</html>
